@@ -1,0 +1,18 @@
+server:
+  port: 8082
+
+spring:
+  config:
+    import: .env[.properties]
+  application:
+    name: review
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DATASOURCE_HOST}:5432/review
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
