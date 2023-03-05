@@ -84,6 +84,12 @@
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 			<version>${org.springframework.cloud.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+			<version>${org.springframework.cloud.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
