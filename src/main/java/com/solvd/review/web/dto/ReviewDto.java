@@ -15,7 +15,7 @@ public record ReviewDto(
         String name,
 
         @NotBlank(message = "Text of review can't be blank!")
-        String description,
+        String text,
 
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         LocalDate date,
