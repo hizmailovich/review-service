@@ -2,12 +2,10 @@ package com.solvd.review.persistence;
 
 
 import com.solvd.review.domain.Review;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import reactor.core.publisher.Flux;
 
-@Repository
-public interface ReviewRepository extends ReactiveCrudRepository<Review, Long> {
+public interface ReviewRepository extends R2dbcRepository<Review, Long> {
 
     Flux<Review> findByMovieId(Long movieId);
 
