@@ -11,8 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,18 +25,18 @@ public class ReviewController {
     private final SearchCriteriaMapper searchCriteriaMapper;
 
     @GetMapping()
-    public List<ReviewDto> getAll(@RequestParam(required = false) SearchCriteriaDto searchCriteriaDto) {
+    public Flux<ReviewDto> getAll(SearchCriteriaDto searchCriteriaDto) {
         SearchCriteria searchCriteria = searchCriteriaMapper.toEntity(searchCriteriaDto);
-        List<Review> reviews = reviewService.retrieveByCriteria(searchCriteria);
-        return reviewMapper.toDto(reviews);
+        Flux<Review> reviews = reviewService.retrieveByCriteria(searchCriteria);
+        return reviews.map(reviewMapper::toDto);
     }
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public ReviewDto create(@Validated @RequestBody ReviewDto reviewDto) {
+    public Mono<ReviewDto> create(@Validated @RequestBody ReviewDto reviewDto) {
         Review review = reviewMapper.toEntity(reviewDto);
-        review = reviewService.create(review);
-        return reviewMapper.toDto(review);
+        Mono<Review> reviewMono = reviewService.create(review);
+        return reviewMono.map(reviewMapper::toDto);
     }
 
 }

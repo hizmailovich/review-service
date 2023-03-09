@@ -2,14 +2,11 @@ package com.solvd.review.persistence;
 
 
 import com.solvd.review.domain.Review;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import reactor.core.publisher.Flux;
 
-import java.util.List;
+public interface ReviewRepository extends R2dbcRepository<Review, Long> {
 
-@Repository
-public interface ReviewRepository extends JpaRepository<Review, Long> {
-
-    List<Review> findByMovieId(Long movieId);
+    Flux<Review> findByMovieId(Long movieId);
 
 }
