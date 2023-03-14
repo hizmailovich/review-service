@@ -23,3 +23,6 @@ eureka:
 
 services:
   movie-url: ${MOVIE_URL}
+
+kafka:
+  bootstrap-servers: ${BOOTSTRAP_SERVERS}
