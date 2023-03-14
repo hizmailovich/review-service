@@ -2,7 +2,7 @@ package com.solvd.review.web.controller;
 
 import com.solvd.review.domain.Review;
 import com.solvd.review.domain.criteria.SearchCriteria;
-import com.solvd.review.service.ReviewClient;
+import com.solvd.review.service.ReviewService;
 import com.solvd.review.web.dto.ReviewDto;
 import com.solvd.review.web.dto.SearchCriteriaDto;
 import com.solvd.review.web.dto.mapper.ReviewMapper;
@@ -20,14 +20,14 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/v1/reviews")
 public class ReviewController {
 
-    private final ReviewClient reviewClient;
+    private final ReviewService reviewService;
     private final ReviewMapper reviewMapper;
     private final SearchCriteriaMapper searchCriteriaMapper;
 
     @GetMapping()
     public Flux<ReviewDto> getAll(SearchCriteriaDto searchCriteriaDto) {
         SearchCriteria searchCriteria = searchCriteriaMapper.toEntity(searchCriteriaDto);
-        Flux<Review> reviews = reviewClient.retrieveByCriteria(searchCriteria);
+        Flux<Review> reviews = reviewService.retrieveByCriteria(searchCriteria);
         return reviews.map(reviewMapper::toDto);
     }
 
@@ -35,14 +35,14 @@ public class ReviewController {
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<ReviewDto> create(@Validated @RequestBody ReviewDto reviewDto) {
         Review review = reviewMapper.toEntity(reviewDto);
-        Mono<Review> reviewMono = reviewClient.create(review);
+        Mono<Review> reviewMono = reviewService.create(review);
         return reviewMono.map(reviewMapper::toDto);
     }
 
     @DeleteMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long reviewId) {
-        reviewClient.delete(reviewId);
+        reviewService.delete(reviewId);
     }
 
 }
