@@ -1,0 +1,7 @@
+<consumer>
+    <bootstrapServers>localhost:9092</bootstrapServers>
+    <groupId>group</groupId>
+    <keyDeserializer>org.apache.kafka.common.serialization.StringDeserializer</keyDeserializer>
+    <valueDeserializer>org.apache.kafka.common.serialization.LongDeserializer</valueDeserializer>
+    <topic>movies</topic>
+</consumer>
