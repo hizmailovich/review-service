@@ -4,9 +4,10 @@ import com.solvd.review.domain.Review;
 import com.solvd.review.domain.criteria.SearchCriteria;
 import com.solvd.review.domain.exception.ResourceNotFoundException;
 import com.solvd.review.persistence.ReviewRepository;
-import com.solvd.review.service.ReviewService;
+import com.solvd.review.service.ReviewClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -18,10 +19,10 @@ import java.util.Objects;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ReviewServiceImpl implements ReviewService {
+public class ReviewClientImpl implements ReviewClient {
 
-    private final static String MOVIE_URL = "http://movie/api/v1/movies";
-
+    @Value("${services.movie-url}")
+    private String movieUrl;
     private final ReviewRepository reviewRepository;
     private final WebClient.Builder webClientBuilder;
 
@@ -36,7 +37,7 @@ public class ReviewServiceImpl implements ReviewService {
     public Mono<Review> create(Review review) {
         Mono<Boolean> exists = webClientBuilder.build()
                 .get()
-                .uri(MOVIE_URL + "/exists/{movieId}", review.getMovieId())
+                .uri(movieUrl + "/exists/{movieId}", review.getMovieId())
                 .retrieve()
                 .bodyToMono(Boolean.class);
         return exists.flatMap(value -> {
