@@ -22,7 +22,7 @@ import java.util.Objects;
 public class ReviewClientImpl implements ReviewClient {
 
     @Value("${services.movie-url}")
-    private final String movieUrl;
+    private String movieUrl;
     private final ReviewRepository reviewRepository;
     private final WebClient.Builder webClientBuilder;
 
