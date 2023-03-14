@@ -4,7 +4,7 @@ import com.solvd.review.domain.Review;
 import com.solvd.review.domain.criteria.SearchCriteria;
 import com.solvd.review.domain.exception.ResourceNotFoundException;
 import com.solvd.review.persistence.ReviewRepository;
-import com.solvd.review.service.ReviewService;
+import com.solvd.review.service.ReviewClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,7 @@ import java.util.Objects;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ReviewServiceImpl implements ReviewService {
+public class ReviewClientImpl implements ReviewClient {
 
     @Value("${services.movie-url}")
     private String movieUrl;
