@@ -17,11 +17,7 @@ public class KafkaConsumer {
     private final ReviewService reviewService;
 
     @PostConstruct
-    private void listen(){
-        receive();
-    }
-
-    public void receive() {
+    private void receive() {
         kafkaReceiver.receive()
                 .subscribe(record -> {
                     ReceiverOffset offset = record.receiverOffset();
