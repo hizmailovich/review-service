@@ -11,4 +11,8 @@ public interface ReviewService {
 
     Mono<Review> create(Review review);
 
+    void delete(Long reviewId);
+
+    void deleteByMovieId(Long movieId);
+
 }

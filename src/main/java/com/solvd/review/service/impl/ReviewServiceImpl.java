@@ -21,6 +21,7 @@ import java.util.Objects;
 public class ReviewServiceImpl implements ReviewService {
 
     private final static String MOVIE_URL = "http://movie/api/v1/movies";
+
     private final ReviewRepository reviewRepository;
     private final WebClient.Builder webClientBuilder;
 
@@ -46,6 +47,16 @@ public class ReviewServiceImpl implements ReviewService {
                 return reviewRepository.save(review);
             }
         });
+    }
+
+    @Override
+    public void delete(Long reviewId) {
+        reviewRepository.deleteById(reviewId).subscribe();
+    }
+
+    @Override
+    public void deleteByMovieId(Long movieId) {
+        reviewRepository.deleteAllByMovieId(movieId).subscribe();
     }
 
 }
