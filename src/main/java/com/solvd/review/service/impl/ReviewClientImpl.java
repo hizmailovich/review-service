@@ -22,7 +22,7 @@ import java.util.Objects;
 public class ReviewClientImpl implements ReviewClient {
 
     @Value("${services.movie-url}")
-    private final String MOVIE_URL;
+    private final String movieUrl;
     private final ReviewRepository reviewRepository;
     private final WebClient.Builder webClientBuilder;
 
@@ -37,7 +37,7 @@ public class ReviewClientImpl implements ReviewClient {
     public Mono<Review> create(Review review) {
         Mono<Boolean> exists = webClientBuilder.build()
                 .get()
-                .uri(MOVIE_URL + "/exists/{movieId}", review.getMovieId())
+                .uri(movieUrl + "/exists/{movieId}", review.getMovieId())
                 .retrieve()
                 .bodyToMono(Boolean.class);
         return exists.flatMap(value -> {
