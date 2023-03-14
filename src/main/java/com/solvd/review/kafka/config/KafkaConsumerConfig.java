@@ -28,8 +28,8 @@ public class KafkaConsumerConfig {
         ReceiverOptions<String, Long> receiverOptions = ReceiverOptions.create(props);
         return receiverOptions
                 .subscription(Collections.singleton( XmlParser.getValue("topic")))
-                .addAssignListener(receiverPartitions -> log.debug("Assigned: " + receiverPartitions))
-                .addRevokeListener(receiverPartitions -> log.debug("Revoked: " + receiverPartitions));
+                .addAssignListener(receiverPartitions -> log.info("Assigned: " + receiverPartitions))
+                .addRevokeListener(receiverPartitions -> log.info("Revoked: " + receiverPartitions));
     }
 
     @Bean
