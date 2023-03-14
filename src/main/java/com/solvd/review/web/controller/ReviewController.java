@@ -39,4 +39,10 @@ public class ReviewController {
         return reviewMono.map(reviewMapper::toDto);
     }
 
+    @DeleteMapping("/{reviewId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long reviewId) {
+        reviewService.delete(reviewId);
+    }
+
 }
