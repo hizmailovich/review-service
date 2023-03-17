@@ -2,8 +2,6 @@ server:
   port: 8082
 
 spring:
-  config:
-    import: .env[.properties]
   application:
     name: review
   jackson:
