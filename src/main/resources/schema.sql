@@ -1,3 +1,5 @@
+CREATE DATABASE review;
+
 CREATE TABLE IF NOT EXISTS reviews
 (
     id       bigserial    NOT NULL,
