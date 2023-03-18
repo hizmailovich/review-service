@@ -3,10 +3,12 @@ package com.solvd.review.kafka.config;
 import com.solvd.review.kafka.parser.XmlParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.core.KafkaAdmin;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
 
@@ -34,6 +36,13 @@ public class KafkaConsumerConfig {
                 .subscription(Collections.singleton( XmlParser.getValue("topic")))
                 .addAssignListener(receiverPartitions -> log.info("Assigned: " + receiverPartitions))
                 .addRevokeListener(receiverPartitions -> log.info("Revoked: " + receiverPartitions));
+    }
+
+    @Bean
+    public KafkaAdmin kafkaAdmin() {
+        Map<String, Object> configs = new HashMap<>();
+        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        return new KafkaAdmin(configs);
     }
 
     @Bean
