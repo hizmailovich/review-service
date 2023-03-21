@@ -1,5 +1,5 @@
 # ReviewMicroservice
-This is a reactive part of simple "Movie App" that contains movie microservice. In this app user can leave reviews for movies.
+This is a reactive part of simple "Movie App" that contains review microservice. In this app user can leave reviews for movies.
 
 ## Glossary
 Review - information about review 
