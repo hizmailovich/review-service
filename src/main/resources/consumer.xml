@@ -1,5 +1,5 @@
 <consumer>
-    <groupId>group</groupId>
+    <groupId>group1</groupId>
     <keyDeserializer>org.apache.kafka.common.serialization.StringDeserializer</keyDeserializer>
     <valueDeserializer>org.apache.kafka.common.serialization.LongDeserializer</valueDeserializer>
     <topic>movies</topic>
