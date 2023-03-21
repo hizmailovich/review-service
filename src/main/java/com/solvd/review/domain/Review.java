@@ -20,6 +20,7 @@ public class Review {
     private String name;
     private String text;
     private LocalDate date;
+    private Integer mark;
 
     @Column("movie_id")
     private Long movieId;
