@@ -23,6 +23,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Value("${services.movie-url}")
     private String movieUrl;
+
+    @Value("${services.rating-url}")
+    private String ratingUrl;
+
     private final ReviewRepository reviewRepository;
     private final WebClient.Builder webClientBuilder;
 
@@ -45,7 +49,12 @@ public class ReviewServiceImpl implements ReviewService {
                 return Mono.error(new ResourceNotFoundException("Movie with id = " + review.getMovieId() + " doesn't exist!"));
             } else {
                 review.setDate(LocalDate.now());
-                return reviewRepository.save(review);
+                return webClientBuilder.build()
+                        .put()
+                        .uri(ratingUrl + "?movieId=" + review.getMovieId() + "&mark=" + review.getMark())
+                        .retrieve()
+                        .toBodilessEntity()
+                        .then(reviewRepository.save(review));
             }
         });
     }
