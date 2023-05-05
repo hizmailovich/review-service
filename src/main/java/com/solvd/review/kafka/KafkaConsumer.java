@@ -23,7 +23,8 @@ public class KafkaConsumer {
                 .subscribe(record -> {
                     ReceiverOffset offset = record.receiverOffset();
                     log.info("Received event: " + record.value());
-                    if (record.value().getAction() == Event.Action.DELETE_REVIEW) {
+                    if (record.value().getAction() != null
+                            && record.value().getAction() == Event.Action.DELETE_REVIEW) {
                         this.reviewService.deleteByMovieId(
                                 record.value().getMovie().getId()
                         );
