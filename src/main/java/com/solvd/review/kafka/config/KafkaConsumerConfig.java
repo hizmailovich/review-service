@@ -1,6 +1,7 @@
 package com.solvd.review.kafka.config;
 
-import com.solvd.review.kafka.parser.XmlParser;
+import com.solvd.review.domain.Event;
+import com.solvd.review.kafka.parser.Parser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.AdminClientConfig;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.KafkaAdmin;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
 
@@ -21,33 +23,49 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KafkaConsumerConfig {
 
+    private final Parser parser;
+
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
 
     @Bean
-    public ReceiverOptions<String, Long> receiverOptions() {
+    public ReceiverOptions<String, Event> receiverOptions() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, XmlParser.getValue("groupId"));
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, XmlParser.getValue("keyDeserializer"));
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,  XmlParser.getValue("valueDeserializer"));
-        ReceiverOptions<String, Long> receiverOptions = ReceiverOptions.create(props);
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, this.bootstrapServers);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, this.parser.getValue(
+                "consumer.xml", "groupId")
+        );
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,  this.parser.getValue(
+                "consumer.xml", "keyDeserializer")
+        );
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,  this.parser.getValue(
+                "consumer.xml", "valueDeserializer")
+        );
+        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, this.parser.getValue(
+                "consumer.xml", "valueDefaultType")
+        );
+        props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
+        ReceiverOptions<String, Event> receiverOptions = ReceiverOptions.create(props);
         return receiverOptions
-                .subscription(Collections.singleton( XmlParser.getValue("topic")))
-                .addAssignListener(receiverPartitions -> log.info("Assigned: " + receiverPartitions))
-                .addRevokeListener(receiverPartitions -> log.info("Revoked: " + receiverPartitions));
+                .subscription(Collections.singleton(
+                        this.parser.getValue("consumer.xml", "topic")))
+                .addAssignListener(receiverPartitions ->
+                        log.info("Assigned: " + receiverPartitions))
+                .addRevokeListener(receiverPartitions ->
+                        log.info("Revoked: " + receiverPartitions));
     }
 
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configs = new HashMap<>();
-        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG,
+                this.bootstrapServers);
         return new KafkaAdmin(configs);
     }
 
     @Bean
-    public KafkaReceiver<String, Long> kafkaReceiver() {
-        return KafkaReceiver.create(receiverOptions());
+    public KafkaReceiver<String, Event> kafkaReceiver() {
+        return KafkaReceiver.create(this.receiverOptions());
     }
 
 }

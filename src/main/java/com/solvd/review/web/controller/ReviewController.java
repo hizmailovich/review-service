@@ -26,23 +26,23 @@ public class ReviewController {
 
     @GetMapping()
     public Flux<ReviewDto> getAll(SearchCriteriaDto searchCriteriaDto) {
-        SearchCriteria searchCriteria = searchCriteriaMapper.toEntity(searchCriteriaDto);
-        Flux<Review> reviews = reviewService.retrieveByCriteria(searchCriteria);
-        return reviews.map(reviewMapper::toDto);
+        SearchCriteria searchCriteria = this.searchCriteriaMapper.toEntity(searchCriteriaDto);
+        Flux<Review> reviews = this.reviewService.retrieveByCriteria(searchCriteria);
+        return reviews.map(this.reviewMapper::toDto);
     }
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<ReviewDto> create(@Validated @RequestBody ReviewDto reviewDto) {
-        Review review = reviewMapper.toEntity(reviewDto);
-        Mono<Review> reviewMono = reviewService.create(review);
-        return reviewMono.map(reviewMapper::toDto);
+        Review review = this.reviewMapper.toEntity(reviewDto);
+        Mono<Review> reviewMono = this.reviewService.create(review);
+        return reviewMono.map(this.reviewMapper::toDto);
     }
 
     @DeleteMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long reviewId) {
-        reviewService.delete(reviewId);
+        this.reviewService.delete(reviewId);
     }
 
 }

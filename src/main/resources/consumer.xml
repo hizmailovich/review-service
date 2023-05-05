@@ -1,6 +1,7 @@
 <consumer>
-    <groupId>group1</groupId>
+    <groupId>group3</groupId>
     <keyDeserializer>org.apache.kafka.common.serialization.StringDeserializer</keyDeserializer>
-    <valueDeserializer>org.apache.kafka.common.serialization.LongDeserializer</valueDeserializer>
+    <valueDeserializer>org.springframework.kafka.support.serializer.JsonDeserializer</valueDeserializer>
+    <valueDefaultType>com.solvd.review.domain.Event</valueDefaultType>
     <topic>movies</topic>
 </consumer>

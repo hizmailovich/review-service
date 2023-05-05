@@ -1,5 +1,6 @@
 package com.solvd.review.kafka;
 
+import com.solvd.review.domain.Event;
 import com.solvd.review.service.ReviewService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -13,16 +14,20 @@ import reactor.kafka.receiver.ReceiverOffset;
 @RequiredArgsConstructor
 public class KafkaConsumer {
 
-    private final KafkaReceiver<String, Long> kafkaReceiver;
+    private final KafkaReceiver<String, Event> kafkaReceiver;
     private final ReviewService reviewService;
 
     @PostConstruct
     private void receive() {
-        kafkaReceiver.receive()
+        this.kafkaReceiver.receive()
                 .subscribe(record -> {
                     ReceiverOffset offset = record.receiverOffset();
-                    log.info("Received id: " + record.value());
-                    reviewService.deleteByMovieId(record.value());
+                    log.info("Received event: " + record.value());
+                    if (record.value().getAction() == Event.Action.DELETE_REVIEW) {
+                        this.reviewService.deleteByMovieId(
+                                record.value().getMovie().getId()
+                        );
+                    }
                     offset.acknowledge();
                 });
     }

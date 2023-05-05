@@ -1,21 +1,25 @@
-package com.solvd.review.kafka.parser;
+package com.solvd.review.kafka.parser.impl;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+
+import com.solvd.review.kafka.parser.Parser;
 import lombok.SneakyThrows;
-import lombok.experimental.UtilityClass;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-@UtilityClass
-public class XmlParser {
+@Component
+public class XmlParser implements Parser {
 
+    @Override
     @SneakyThrows
-    public static String getValue(String node) {
+    public String getValue(final String filename,
+                           final String node) {
         XML xml = new XMLDocument(Objects.requireNonNull(
                 XmlParser.class
                         .getClassLoader()
-                        .getResource("consumer.xml")));
+                        .getResource(filename)));
         return xml.nodes("//" + node)
                 .get(0)
                 .xpath("text()")

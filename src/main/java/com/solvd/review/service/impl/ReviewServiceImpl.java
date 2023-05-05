@@ -33,15 +33,15 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Flux<Review> retrieveByCriteria(SearchCriteria searchCriteria) {
         return Objects.nonNull(searchCriteria) && Objects.nonNull(searchCriteria.getMovieId()) ?
-                reviewRepository.findByMovieId(searchCriteria.getMovieId()) :
-                reviewRepository.findAll();
+                this.reviewRepository.findByMovieId(searchCriteria.getMovieId()) :
+                this.reviewRepository.findAll();
     }
 
     @Override
     public Mono<Review> create(Review review) {
-        Mono<Boolean> exists = webClientBuilder.build()
+        Mono<Boolean> exists = this.webClientBuilder.build()
                 .get()
-                .uri(movieUrl + "/exists/{movieId}", review.getMovieId())
+                .uri(this.movieUrl + "/exists/{movieId}", review.getMovieId())
                 .retrieve()
                 .bodyToMono(Boolean.class);
         return exists.flatMap(value -> {
@@ -49,24 +49,24 @@ public class ReviewServiceImpl implements ReviewService {
                 return Mono.error(new ResourceNotFoundException("Movie with id = " + review.getMovieId() + " doesn't exist!"));
             } else {
                 review.setDate(LocalDate.now());
-                return webClientBuilder.build()
+                return this.webClientBuilder.build()
                         .put()
-                        .uri(ratingUrl + "?movieId=" + review.getMovieId() + "&mark=" + review.getMark())
+                        .uri(this.ratingUrl + "?movieId=" + review.getMovieId() + "&mark=" + review.getMark())
                         .retrieve()
                         .toBodilessEntity()
-                        .then(reviewRepository.save(review));
+                        .then(this.reviewRepository.save(review));
             }
         });
     }
 
     @Override
     public void delete(Long reviewId) {
-        reviewRepository.deleteById(reviewId).subscribe();
+        this.reviewRepository.deleteById(reviewId).subscribe();
     }
 
     @Override
     public void deleteByMovieId(Long movieId) {
-        reviewRepository.deleteAllByMovieId(movieId).subscribe();
+        this.reviewRepository.deleteAllByMovieId(movieId).subscribe();
     }
 
 }
